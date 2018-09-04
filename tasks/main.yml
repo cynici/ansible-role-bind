@@ -21,6 +21,28 @@
     - "{{ bind_packages }}"
   tags: bind
 
+- name: Test if firewalld is active
+  command: /usr/bin/pgrep firewalld
+  register: firewalld
+  ignore_errors: true
+  changed_when: false
+  failed_when: false
+  tags:
+    - fw
+    - dns
+
+- name: Open firewall port
+  firewalld:
+    service: dns
+    immediate: yes
+    permanent: true
+    state: enabled
+  become: yes
+  when: "firewalld.rc is defined and firewalld.rc == 0"
+  tags:
+    - fw
+    - dns
+
 - name: Ensure runtime directories referenced in config exist
   file:
     path: "{{ item }}"
