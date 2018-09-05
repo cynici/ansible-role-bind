@@ -1,0 +1,10 @@
+{% for bzd in bind_zone_domains %}
+{% if bzd.delegated_forwarders is defined -%}
+{% for df in bzd.delegated_forwarders %}
+zone "{{ df.zone }}.{{ bzd.name }}" IN {
+    type forward;
+    forwarders { {{ df.dns|join(';') }}; };
+};
+{% endfor %}
+{% endif %}
+{% endfor %}
