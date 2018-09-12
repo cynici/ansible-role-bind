@@ -18,6 +18,7 @@ options {
   dump-file   "{{ bind_dir }}/data/cache_dump.db";
   statistics-file "{{ bind_dir }}/data/named_stats.txt";
   memstatistics-file "{{ bind_dir }}/data/named_mem_stats.txt";
+  version "{{ bind_version }}";
   allow-query     { {{ bind_allow_query|join(';') }}; };
 {% if bind_acls|length != 0 %}
   allow-transfer  { {% for acl in bind_acls %}"{{ acl.name }}"; {% endfor %}};
