@@ -61,3 +61,24 @@
       skip_missing: true
   notify: reload bind
   tags: bind
+
+- name: Master | Copy DNSSEC public keys
+  synchronize:
+    src: dnssec-keys/
+    dest: "{{ bind_dir }}/keys"
+  tags:
+    - bind
+    - bind-keys
+
+- name: Master | Create DNSSEC private keys
+  copy:
+    content: "{{ item.value }}"
+    dest: "{{ bind_dir }}/keys/{{ item.key }}"
+    owner: root
+    group: named
+    mode: 0440
+  with_dict: "{{ bind_dnssec_private_keys }}"
+  when: 'bind_dnssec_private_keys is defined'
+  tags:
+    - bind
+    - bind-keys

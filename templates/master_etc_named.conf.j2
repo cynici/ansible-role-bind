@@ -77,6 +77,11 @@ zone "{{ bind_zone.name }}" IN {
 {% else %}
   allow-update { none; };
 {% endif %}
+{% if bind_zone.key_directory is defined %}
+  key-directory "{{ bind_zone.key_directory }}";
+  inline-signing yes;
+  auto-dnssec maintain;
+{% endif %}
 };
 
 {% if bind_zone.networks is defined %}
@@ -94,6 +99,11 @@ zone "{{ ('.'.join(network.replace(network+'.','').split('.')[::-1])) }}.in-addr
   allow-update { none; };
 {% endif %}
 };
+{% if bind_zone.key_directory is defined %}
+  key-directory "{{ bind_zone.key_directory }}";
+  inline-signing yes;
+  auto-dnssec maintain;
+{% endif %}
 {% endfor %}
 {% endif %}
 
