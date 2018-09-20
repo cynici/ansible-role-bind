@@ -7,7 +7,9 @@
   with_first_found:
     - "{{ ansible_distribution }}.yml"
     - "{{ ansible_os_family }}.yml"
-  tags: bind
+  tags:
+    - bind
+    - bind-keys
 
 - name: Check whether `bind_zone_master_server_ip` was set
   assert:
@@ -116,13 +118,19 @@
 
 - include_tasks: master.yml
   when: bind_zone_master_server_ip in ansible_all_ipv4_addresses
+  tags:
+    - bind-keys
 
 - include_tasks: slave.yml
   when: bind_zone_master_server_ip not in ansible_all_ipv4_addresses
+  tags:
+    - bind-keys
 
 - name: Start BIND service
   service:
     name: "{{ bind_service }}"
     state: started
     enabled: true
-  tags: bind
+  tags:
+    - bind
+    - bind-keys
