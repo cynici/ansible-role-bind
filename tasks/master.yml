@@ -62,13 +62,25 @@
   notify: reload bind
   tags: bind
 
-- name: Master | Create DNSSEC key directory
+- name: Master | Create DNSSEC key base directory
   file:
     path: "{{ bind_dir }}/keys"
     owner: root
     group: named
     mode: 0770
-  when: 'bind_dnssec_public_keys is defined'
+    state: directory
+  tags:
+    - bind
+    - bind-keys
+
+- name: Master | Create DNSSEC per-zone key directory
+  file:
+    path: "{{ bind_dir }}/keys/{{ item.key|dirname }}"
+    owner: root
+    group: named
+    mode: 0755
+    state: directory
+  with_dict: "{{ bind_dnssec_public_keys }}"
   tags:
     - bind
     - bind-keys
@@ -81,7 +93,7 @@
     group: named
     mode: 0444
   with_dict: "{{ bind_dnssec_public_keys }}"
-  when: 'bind_dnssec_public_keys is defined'
+  when: bind_dnssec_public_keys is defined
   tags:
     - bind
     - bind-keys
@@ -94,7 +106,7 @@
     group: named
     mode: 0440
   with_dict: "{{ bind_dnssec_private_keys }}"
-  when: 'bind_dnssec_private_keys is defined'
+  when: bind_dnssec_private_keys is defined
   tags:
     - bind
     - bind-keys
