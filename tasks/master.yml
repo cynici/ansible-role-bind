@@ -81,6 +81,7 @@
     mode: 0755
     state: directory
   with_dict: "{{ bind_dnssec_public_keys }}"
+  when: bind_dnssec_public_keys is defined
   tags:
     - bind
     - bind-keys
@@ -106,7 +107,7 @@
     group: named
     mode: 0440
   with_dict: "{{ bind_dnssec_private_keys }}"
-  when: bind_dnssec_private_keys is defined
+  when: bind_dnssec_public_keys is defined and bind_dnssec_private_keys is defined
   tags:
     - bind
     - bind-keys
