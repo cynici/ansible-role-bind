@@ -43,6 +43,14 @@ options {
 
   pid-file "/run/named/named.pid";
   session-keyfile "/run/named/session.key";
+{% if bind_recursive_clients is defined %}
+  # Default: 1000
+  recursive-clients {{ bind_recursive_clients }};
+{% endif %}
+{% if bind_tcp_clients is defined %}
+  # Default: 100
+  tcp-clients {{ bind_tcp_clients }};
+{% endif %}
 };
 
 logging {
